@@ -1,0 +1,18 @@
+def hamming_distance(str1, str2):
+    """Calculate the Hamming distance between two strings."""
+    length = min(len(str1), len(str2))  # Compare up to the length of the shorter string
+    return sum(c1 != c2 for c1, c2 in zip(str1[:length], str2[:length]))
+
+# Member details
+members = [
+    ("Umunakwehackbio", "@UGoodnessGozie"),
+    ("Raji", "@Abdulrah001"),
+    ("Sakshi", "@Sakshi"),
+    ("Ange", "@Ange"),
+    ("Maero", "@Maero")
+]
+
+# Calculate and print Hamming distances
+for i, (slack, twitter) in enumerate(members, start=1):
+    distance = hamming_distance(slack, twitter)
+    print(f"Member {i}: Hamming Distance between '{slack}' and '{twitter}' is {distance}")
