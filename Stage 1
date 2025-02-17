@@ -1,0 +1,8 @@
+def hamming_distance(str1, str2):
+#Member_1
+slack_username = "Umunakwehackbi"
+twitter_handle = "UGoodnessGozie"
+
+# Calculate Hamming distance
+distance = hamming_distance(slack_username, twitter_handle)
+print(f"Hamming distance between '{slack_username}' and '{twitter_handle}' is: {distance}")
