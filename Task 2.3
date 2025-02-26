@@ -1,0 +1,52 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.linear_model import LinearRegression
+
+# Load dataset
+df = pd.read_csv("botany_dataset.csv")  # Replace with actual dataset path
+
+# Calculate the difference in metabolic response (ΔM)
+df["ΔM"] = df["Metabolic_Response_24h"] - df["Metabolic_Response_DMSO"]
+
+# Generate scatter plot for ΔM
+plt.figure(figsize=(8, 6))
+sns.scatterplot(data=df, x="Metabolite", y="ΔM", hue="Type", palette={"WT": "blue", "Mutant": "red"})
+plt.axline((0, 0), slope=1, color="black", linestyle="--", label="y = x (reference line)")
+plt.xticks(rotation=90)
+plt.title("Scatter Plot of ΔM for WT and Mutants")
+plt.legend()
+plt.show()
+
+# Fit line with y-intercept = 0 and slope = 1
+df["Fitted"] = df["Metabolite_Index"]  # Assuming metabolites are indexed numerically
+df["Residual"] = df["ΔM"] - df["Fitted"]
+
+# Define cut-off for residuals
+cut_off = 0.3
+df["Color"] = np.where(df["Residual"].between(-cut_off, cut_off), "grey", "salmon")
+
+# Scatter plot with color-coded residuals
+plt.figure(figsize=(8, 6))
+sns.scatterplot(data=df, x="Metabolite", y="ΔM", hue="Color", palette={"grey": "grey", "salmon": "salmon"})
+plt.axline((0, 0), slope=1, color="black", linestyle="--")
+plt.xticks(rotation=90)
+plt.title("Scatter Plot of ΔM with Residual Coloring")
+plt.legend()
+plt.show()
+
+# Identify outlier metabolites
+outlier_metabolites = df[df["Color"] == "salmon"]["Metabolite"].head(6)
+
+# Line plot for selected metabolites
+plt.figure(figsize=(10, 6))
+for metabolite in outlier_metabolites:
+    subset = df[df["Metabolite"] == metabolite]
+    plt.plot(["0h", "8h", "24h"], subset[["Metabolic_Response_0h", "Metabolic_Response_8h", "Metabolic_Response_24h"]].values.flatten(), marker="o", label=metabolite)
+
+plt.xlabel("Time (h)")
+plt.ylabel("Metabolic Response")
+plt.title("Metabolic Response Over Time for Selected Metabolites")
+plt.legend()
+plt.show()
